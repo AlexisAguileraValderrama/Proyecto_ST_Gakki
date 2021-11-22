@@ -36,6 +36,21 @@ umbral = 10
 sample_rate = 48000
     
 chunk = int(segundos * sample_rate)
+
+tam = int(segundos * sample_rate / 2)
+    
+modelo = Gakki_NN(tam, 8)
+
+ins = {
+        0    : "Bass",
+        1    : "Flute",
+        2    : "Guitar",
+        3    : "Kalimba",
+        4    : "Piano",
+        5    : "Saxophone",
+        6    : "Shamisen",
+        7    : "Violin",
+}
  
 def getSamples(batch ,file, num_samples, instrument_index):
     
@@ -205,7 +220,34 @@ def train():
                 i = i + 1
     return modelo
         
+    
+def load_model():
+    
+    modelo.load()
 
+def Listen():
+    
+    record()
+    
+    samplerate, data = wavfile.read("recording1.wav")
+    
+    mono = data[:,0]
+    
+    samples = mono[0:chunk]
+    
+    transformada = np.abs(fft(samples) * 2 / (256 * chunk))
+    
+    transformada = transformada[int(chunk/2):len(transformada)]
+        
+    pred = modelo.predict(transformada).detach().numpy()[0].tolist()
+        
+    max_val = max(pred)
+    
+    index = pred.index(max_val)
+        
+    return ins[index]
+    
+        
 def record():
     # Sampling frequency
     freq = sample_rate
@@ -221,46 +263,7 @@ def record():
     sd.wait()
     
     wv.write("recording1.wav", recording, freq, sampwidth=2)
-    
-def prueba_final(modelo):
-    
-    ins = {
-        0    : "Bass",
-        1    : "Flute",
-        2    : "Guitar",
-        3    : "Kalimba",
-        4    : "Piano",
-        5    : "Saxophone",
-        6    : "Shamisen",
-        7    : "Violin",
-    }
-    
-    while True:
-    
-        record()
-    
-        samplerate, data = wavfile.read("recording1.wav")
-    
-        mono = data[:,0]
-    
-        samples = mono[0:chunk]
-    
-        transformada = np.abs(fft(samples) * 2 / (256 * chunk))
-    
-        transformada = transformada[int(chunk/2):len(transformada)]
         
-        pred = modelo.predict(transformada).detach().numpy()[0].tolist()
-        
-        max_val = max(pred)
-    
-        index = pred.index(max_val)
-        
-        print(ins[index])
-        
-        
-import tkinter
-
-window = tkinter.Tk()
 
     
     
