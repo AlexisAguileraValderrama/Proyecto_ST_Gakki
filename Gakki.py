@@ -52,7 +52,8 @@ boton.pack()
 
 global my_label_disclaim
 my_label_disclaim = Label(window, text="AVISO: Para mejor detección del sonido se recomienda usar el audio directo de la computadora\n" +
-                                       "Para lograr esto desconecte todos los microfonos externos y habilite la entrada de audio del sistema")
+                                       "Para lograr esto desconecte todos los microfonos externos y habilite la entrada de audio del sistema\n"+
+                                       " y ponga el audio en youtube, spotify, soundcloud o el software que guste.")
 my_label_disclaim.pack(pady=10)
 
 global my_label_info
